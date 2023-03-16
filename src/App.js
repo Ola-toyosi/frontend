@@ -17,9 +17,11 @@ class App extends Component {
         due_date: "",
         completed: false,
       },
+      editing: false,
       // empty list to hold data fetched from API
       todoList: [],
     };
+    this.fetchTasks = this.fetchTasks.bind(this);
   }
 
   // async to enable asynchronous operations
@@ -33,16 +35,42 @@ class App extends Component {
       const todoList = await res.json();
       // change previous state of the initial todoList
       this.setState({
-        todoList,
+        todoList: todoList,
       });
+      console.log[todoList];
     } catch (e) {
       console.log(e);
     }
   }
 
+  fetchTasks() {
+    console.log("Fetching...");
+
+    fetch("http://127.0.0.1:8000/api/todos/")
+      .then((response) => response.json())
+      .then((data) =>
+        this.setState({
+          todoList: data,
+        })
+      );
+  }
+
+  deleteTask = (item) => {
+    axios.delete(`http://localhost:8000/api/todos/${item.id}/`);
+    this.fetchTasks();
+  };
+
   // changes Modal state when triggered
   toggle = () => {
     this.setState({ modal: !this.state.modal });
+  };
+
+  editTask = (item) => {
+    this.setState({
+      activeItem: item,
+      editing: true,
+      modal: !this.state.modal,
+    });
   };
 
   //Responsible for saving the task
@@ -52,10 +80,12 @@ class App extends Component {
     //  if item already exists, update it
     if (item.id) {
       axios.put(`http://localhost:8000/api/todos/${item.id}/`, item);
+      this.fetchTasks();
       return;
     }
     // else create new item
     axios.post("http://localhost:8000/api/todos/", item);
+    this.fetchTasks();
   };
 
   // create item and toggle modal
@@ -69,18 +99,21 @@ class App extends Component {
     }
     return this.setState({ viewCompleted: false });
   };
+
+  // tabs to diplay completed or incomplete tasks
   renderTabList = () => {
     return (
-      <div className="my-5 tab-list">
+      <div className="nav nav-tabs">
         <button
           onClick={() => this.displayCompleted(true)}
-          className={this.state.viewCompleted ? "active" : ""}
+          className={this.state.viewCompleted ? "nav-link active" : "nav-link"}
         >
           Complete
         </button>
+        <t />
         <button
           onClick={() => this.displayCompleted(false)}
-          className={this.state.viewCompleted ? "" : "active"}
+          className={this.state.viewCompleted ? "nav-link" : "nav-link active"}
         >
           Incomplete
         </button>
@@ -111,7 +144,21 @@ class App extends Component {
           {item.title}
         </span>
         <span>
-        {item.due_date}
+          {item.due_date}
+          <div style={{ flex: 2 }}>
+            <button
+              onClick={() => this.editTask(item)}
+              className="btn btn-secondary mr-2"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => this.deleteTask(item)}
+              className="btn btn-danger"
+            >
+              Del
+            </button>
+          </div>
         </span>
       </li>
     ));

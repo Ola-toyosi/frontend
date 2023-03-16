@@ -75,7 +75,7 @@ class CustomModal extends Component {
                         <FormGroup>
                             <Label for="due_date">Due Date</Label>
                             <Input
-                                type="text"
+                                type="date"
                                 name="due_date"
                                 value={this.state.activeItem.due_date}
                                 onChange={this.handleChange}
