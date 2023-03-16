@@ -62,7 +62,7 @@ class CustomModal extends Component {
                         </FormGroup>
                         {/* Description */}
                         <FormGroup>
-                            <Label for="description">Title</Label>
+                            <Label for="description">Description</Label>
                             <Input
                                 type="text"
                                 name="description"
@@ -73,7 +73,7 @@ class CustomModal extends Component {
                         </FormGroup>
                         {/* Due Date */}
                         <FormGroup>
-                            <Label for="due_date">Title</Label>
+                            <Label for="due_date">Due Date</Label>
                             <Input
                                 type="text"
                                 name="due_date"
